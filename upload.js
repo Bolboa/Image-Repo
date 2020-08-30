@@ -5,7 +5,9 @@ AWS.config.update({accessKeyId: process.env.ID, secretAccessKey: process.env.SEC
 
 const PART_SIZE = 1024 * 1024 * 5;
 const MAX_UPLOAD_RETRIES = 3;
-const BUCKET = process.env.BUCKET_NAME;
+const ZIP_BUCKET = process.env.ZIP_BUCKET_NAME;
+const IMAGE_REPO = process.env.IMAGE_BUCKET_NAME;
+const FILE_REGEX = /\/(jpg|jpeg|png|gif)$/i;
 
 var multipartMap = {
   Parts: []
@@ -20,13 +22,18 @@ const uploadFiles = async (ctx) => {
 }
 
 const uploadSingleFile = async (s3, file) => {
+  const contentType = file.type;
+  const bucket = await checkFileType(contentType);
+  if (bucket === undefined) {
+    console.log("Error Uploading the Following Content Type:", contentType);
+    return;
+  }
   const buffer = fs.readFileSync(file.path);
   const fileName = file.name;
-  const contentType = file.type;
   let sizeLeft = Math.ceil(buffer.length / PART_SIZE);
   
   s3.createMultipartUpload({
-    Bucket: BUCKET,
+    Bucket: bucket,
     Key: fileName,
     ContentType: contentType
   }, (err, multipart) => {
@@ -37,7 +44,7 @@ const uploadSingleFile = async (s3, file) => {
       partNum++;
       uploadSlice({
         Body: buffer.slice(rangeStart, Math.min(rangeStart + PART_SIZE, buffer.length)),
-        Bucket: BUCKET,
+        Bucket: bucket,
         Key: fileName,
         PartNumber: String(partNum),
         UploadId: multipart.UploadId
@@ -63,7 +70,7 @@ const uploadSlice = async (partParams, s3, sizeLeft, retries=1) => {
     }
 
     sizeLeft <= 0 && s3.completeMultipartUpload({
-      Bucket: BUCKET,
+      Bucket: partParams.Bucket,
       Key: partParams.Key,
       MultipartUpload: multipartMap,
       UploadId: partParams.UploadId
@@ -72,6 +79,14 @@ const uploadSlice = async (partParams, s3, sizeLeft, retries=1) => {
       else console.log('Upload Successful', data);
     });
   });
+}
+
+const checkFileType = async (contentType) => {
+  if (contentType.match(FILE_REGEX))
+    return IMAGE_REPO;
+  else if (contentType === 'application/zip')
+    return ZIP_BUCKET;
+  else return;
 }
 
 module.exports = {
