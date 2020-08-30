@@ -15,31 +15,31 @@ const uploadFile = async (ctx) => {
   const s3 = new AWS.S3();
   const buffer = fs.readFileSync(ctx.request.files.test.path);
   const fileName = ctx.request.files.test.name;
+  const contentType = ctx.request.files.test.type;
   let sizeLeft = Math.ceil(buffer.length / PART_SIZE);
 
   s3.createMultipartUpload({
     Bucket: BUCKET,
     Key: fileName,
-    ContentType: 'application/pdf'
+    ContentType: contentType
   }, (err, multipart) => {
     if (err) console.log(err, err.stack);
 
     let partNum = 0;
     for (let rangeStart = 0; rangeStart < buffer.length; rangeStart += PART_SIZE) {
       partNum++;
-      const partParams = {
+      uploadSlice({
         Body: buffer.slice(rangeStart, Math.min(rangeStart + PART_SIZE, buffer.length)),
         Bucket: BUCKET,
         Key: fileName,
         PartNumber: String(partNum),
         UploadId: multipart.UploadId
-      };
-      uploadSlice(s3, partParams, --sizeLeft);
+      }, s3, --sizeLeft);
     }
   });
 }
 
-const uploadSlice = async (s3, partParams, sizeLeft, retries=1) => {
+const uploadSlice = async (partParams, s3, sizeLeft, retries=1) => {
   await s3.uploadPart(partParams, (err, data) => {
     const partNum = partParams.PartNumber;
     if (err) {
@@ -54,18 +54,16 @@ const uploadSlice = async (s3, partParams, sizeLeft, retries=1) => {
       ETag: data.ETag,
       PartNumber: Number(partNum)
     }
-
-    if (sizeLeft <= 0) {
-      s3.completeMultipartUpload({
-        Bucket: BUCKET,
-        Key: partParams.Key,
-        MultipartUpload: multipartMap,
-        UploadId: partParams.UploadId
-      }, (err, data) => {
-        if (err) console.log(err, err.stack);
-        else console.log('Upload Successful', data);
-      });
-    }
+    
+    sizeLeft <= 0 && s3.completeMultipartUpload({
+      Bucket: BUCKET,
+      Key: partParams.Key,
+      MultipartUpload: multipartMap,
+      UploadId: partParams.UploadId
+    }, (err, data) => {
+      if (err) console.log(err, err.stack);
+      else console.log('Upload Successful', data);
+    });
   });
 }
 
