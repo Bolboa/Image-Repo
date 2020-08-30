@@ -1,5 +1,6 @@
 require('dotenv').config();
 const fs = require("fs");
+const Router = require('koa-router');
 const AWS = require('aws-sdk');
 AWS.config.update({accessKeyId: process.env.ID, secretAccessKey: process.env.SECRET});
 
@@ -13,13 +14,13 @@ var multipartMap = {
   Parts: []
 };
 
-const uploadFiles = async (ctx) => {
+const uploadRouter = new Router().post('/documents/upload', async ctx => {
   const s3 = new AWS.S3();
   const files = ctx.request.files;
   Object.keys(files).forEach((key) => {
     uploadSingleFile (s3, files[key]);
   });
-}
+});
 
 const uploadSingleFile = async (s3, file) => {
   const contentType = file.type;
@@ -89,6 +90,4 @@ const checkFileType = async (contentType) => {
   else return;
 }
 
-module.exports = {
-  uploadFiles: uploadFiles
-};
+module.exports.default = uploadRouter;

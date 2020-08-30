@@ -14,6 +14,7 @@
     "koa": "^2.13.0",
     "koa-body": "^4.2.0",
     "koa-bodyparser": "^4.3.0",
+    "koa-combine-routers": "^4.0.2",
     "koa-router": "^9.4.0",
     "multiparty": "^4.2.2"
   }
