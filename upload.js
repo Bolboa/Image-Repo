@@ -11,13 +11,20 @@ var multipartMap = {
   Parts: []
 };
 
-const uploadFile = async (ctx) => {
+const uploadFiles = async (ctx) => {
   const s3 = new AWS.S3();
-  const buffer = fs.readFileSync(ctx.request.files.test.path);
-  const fileName = ctx.request.files.test.name;
-  const contentType = ctx.request.files.test.type;
-  let sizeLeft = Math.ceil(buffer.length / PART_SIZE);
+  const files = ctx.request.files;
+  Object.keys(files).forEach((key) => {
+    uploadSingleFile (s3, files[key]);
+  });
+}
 
+const uploadSingleFile = async (s3, file) => {
+  const buffer = fs.readFileSync(file.path);
+  const fileName = file.name;
+  const contentType = file.type;
+  let sizeLeft = Math.ceil(buffer.length / PART_SIZE);
+  
   s3.createMultipartUpload({
     Bucket: BUCKET,
     Key: fileName,
@@ -45,7 +52,7 @@ const uploadSlice = async (partParams, s3, sizeLeft, retries=1) => {
     if (err) {
       if (retries < MAX_UPLOAD_RETRIES)
         uploadSlice(s3, partParams, retries+1);
-      else
+      else 
         console.log('Failed uploading part: #', partNum)
       return;
     }
@@ -54,7 +61,7 @@ const uploadSlice = async (partParams, s3, sizeLeft, retries=1) => {
       ETag: data.ETag,
       PartNumber: Number(partNum)
     }
-    
+
     sizeLeft <= 0 && s3.completeMultipartUpload({
       Bucket: BUCKET,
       Key: partParams.Key,
@@ -68,5 +75,5 @@ const uploadSlice = async (partParams, s3, sizeLeft, retries=1) => {
 }
 
 module.exports = {
-  uploadFile: uploadFile
+  uploadFiles: uploadFiles
 };
