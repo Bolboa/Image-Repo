@@ -1,6 +1,5 @@
 require('dotenv').config();
 const fs = require("fs");
-const Router = require('koa-router');
 const AWS = require('aws-sdk');
 AWS.config.update({accessKeyId: process.env.ID, secretAccessKey: process.env.SECRET});
 
@@ -14,31 +13,29 @@ var multipartMap = {
   Parts: []
 };
 
-const uploadRouter = new Router().post('/documents/upload', async ctx => {
+const upload = async ctx => {
   const s3 = new AWS.S3();
   const files = ctx.request.files;
-  Object.keys(files).forEach((key) => {
-    uploadSingleFile (s3, files[key]);
-  });
-});
+  await Promise.all(Object.keys(files).map(async (key) => {
+    await uploadSingleFile(s3, files[key]);
+  }));
+};
 
-const uploadSingleFile = async (s3, file) => {
+const uploadSingleFile = async (s3, file) => {  
   const contentType = file.type;
-  const bucket = await checkFileType(contentType);
+  const bucket = await getFileType(contentType);
   if (bucket === undefined) {
-    console.log("Error Uploading the Following Content Type:", contentType);
-    return;
+    throw new Error(`Cannot Upload the Following Content Type -> ${contentType}`);
   }
   const buffer = fs.readFileSync(file.path);
   const fileName = file.name;
   let sizeLeft = Math.ceil(buffer.length / PART_SIZE);
-  
-  s3.createMultipartUpload({
+  await s3.createMultipartUpload({
     Bucket: bucket,
     Key: fileName,
     ContentType: contentType
   }, (err, multipart) => {
-    if (err) console.log(err, err.stack);
+    if (err) throw new Error("errr");
 
     let partNum = 0;
     for (let rangeStart = 0; rangeStart < buffer.length; rangeStart += PART_SIZE) {
@@ -56,13 +53,12 @@ const uploadSingleFile = async (s3, file) => {
 
 const uploadSlice = async (partParams, s3, sizeLeft, retries=1) => {
   await s3.uploadPart(partParams, (err, data) => {
+    if (data === null) throw new Error("eeee");
     const partNum = partParams.PartNumber;
     if (err) {
       if (retries < MAX_UPLOAD_RETRIES)
         uploadSlice(s3, partParams, retries+1);
-      else 
-        console.log('Failed uploading part: #', partNum)
-      return;
+      else throw new Error(`Failed uploading part: #${partNum}`)
     }
 
     multipartMap.Parts[partNum - 1] = {
@@ -76,13 +72,13 @@ const uploadSlice = async (partParams, s3, sizeLeft, retries=1) => {
       MultipartUpload: multipartMap,
       UploadId: partParams.UploadId
     }, (err, data) => {
-      if (err) console.log(err, err.stack);
+      if (err) throw new Error(err.stack);
       else console.log('Upload Successful', data);
     });
   });
 }
 
-const checkFileType = async (contentType) => {
+const getFileType = async (contentType) => {
   if (contentType.match(FILE_REGEX))
     return IMAGE_REPO;
   else if (contentType === 'application/zip')
@@ -90,4 +86,4 @@ const checkFileType = async (contentType) => {
   else return;
 }
 
-module.exports.default = uploadRouter;
+module.exports.default = upload;
