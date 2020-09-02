@@ -1,6 +1,6 @@
 require('dotenv').config();
 const koa = require('koa');
-const router = require('./routes').default;
+const router = require('./routes/src').default;
 const koaBody = require('koa-body');
 
 const app = new koa();
@@ -19,3 +19,5 @@ app.use(async (ctx, next) => {
 app.use(router());
 
 app.listen(process.env.PORT);
+
+module.exports = app;

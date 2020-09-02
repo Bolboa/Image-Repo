@@ -17,5 +17,9 @@
     "koa-combine-routers": "^4.0.2",
     "koa-router": "^9.4.0",
     "multiparty": "^4.2.2"
+  },
+  "devDependencies": {
+    "jest": "^26.4.2",
+    "supertest": "^4.0.2"
   }
 }
