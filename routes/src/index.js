@@ -1,6 +1,6 @@
 const combineRouters = require('koa-combine-routers');
 const Router = require('koa-router');
-const uploadService = require('../../services/src/upload/index').default;
+const uploadService = require('../../services/src/upload/index');
 
 const uploadRouter = new Router({ prefix: '/api' });
 

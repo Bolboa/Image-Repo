@@ -17,11 +17,12 @@ const upload = async ctx => {
   await Promise.all(Object.keys(files).map(async key => {
 		await uploadSingleFile(s3, files[key]);
 	}));
+	ctx.status = 200;
 };
 
 const uploadSingleFile = async (s3, file) => {
   const contentType = file.type;
-  const bucket = await getFileType(contentType);
+	const bucket = await getFileType(contentType);
   if (bucket === undefined)
     throw new Error(`Cannot Upload the Following Content Type -> ${contentType}`);
   
@@ -78,7 +79,6 @@ const completeUpload = async (completeParams, s3) => {
 	await s3
 		.completeMultipartUpload(completeParams)
 		.promise()
-		.then(data => console.log('Upload Successful', data))
 		.catch(err => { throw err });
 }
 
@@ -90,4 +90,4 @@ const getFileType = async contentType => {
   else return;
 }
 
-module.exports.default = upload;
+module.exports = upload;
