@@ -1,17 +1,17 @@
-const request = require('supertest');
-const route = require('../src/index');
+const supertest = require('supertest');
+const http = require('http');
+const app = require('../../app');
+
+const request = supertest(http.createServer(app.callback()));
 
 test('Hello world works', async () => {
 	const payload = {
-		test: ''
+		test: 'fhjfgh'
 	};
-	console.log(route)
 	try {
-		const response = await request(route).post('/api/documents/upload').send(payload);
-		console.log("herre");
+		const response = await request.post('/api/documents/upload');
 		console.log(response);
 	} catch (err) {
 		console.log(err);
-		console.log("noot");
 	}
 });

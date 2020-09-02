@@ -10,4 +10,4 @@ const router = combineRouters(
 	uploadRouter
 );
   
-module.exports.default = router;
+module.exports = router;
