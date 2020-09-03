@@ -16,15 +16,15 @@ const upload = async ctx => {
 	const files = ctx.request.files;
 	const username = ctx.request.query.user;
   await Promise.all(Object.keys(files).map(async key => {
-		await uploadSingleFile(s3, files[key], username);
+		await uploadSingleFile(s3, files[key], username, ctx);
 	}));
 	ctx.status = 200;
 };
 
-const uploadSingleFile = async (s3, file, username) => {
+const uploadSingleFile = async (s3, file, username, ctx) => {
   const contentType = file.type;
 	const bucket = await getFileType(contentType);
-  if (bucket === undefined)
+	if (bucket === undefined)
     throw new Error(`Cannot Upload the Following Content Type -> ${contentType}`);
 
 	const buffer = fs.readFileSync(file.path);

@@ -10,9 +10,9 @@ app.use(async (ctx, next) => {
 	try {
 		await next()
 	} catch (err) {
-		ctx.status = 400
-		ctx.body = `Uh-oh: ${err.message}`
-		console.log('Error handler:', err.message)
+		ctx.status = 400;
+		ctx.body = `Uh-oh: ${err.message}`;
+		console.log('Error handler:', err.message);
 	}
 });
 

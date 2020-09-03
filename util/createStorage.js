@@ -4,7 +4,7 @@ AWS.config.update({ accessKeyId: process.env.ID, secretAccessKey: process.env.SE
 
 const s3 = new AWS.S3();
 
-const params = { Bucket: process.env.BUCKET_NAME };
+const params = { Bucket: process.argv[0] };
 
 s3.createBucket(params, (err, data) => {
   if (err) console.log(err, err.stack);
