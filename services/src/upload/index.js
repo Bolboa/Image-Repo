@@ -13,21 +13,22 @@ const multipartMap = { Parts: [] };
 
 const upload = async ctx => {
   const s3 = new AWS.S3();
-  const files = ctx.request.files;
+	const files = ctx.request.files;
+	const username = ctx.request.query.user;
   await Promise.all(Object.keys(files).map(async key => {
-		await uploadSingleFile(s3, files[key]);
+		await uploadSingleFile(s3, files[key], username);
 	}));
 	ctx.status = 200;
 };
 
-const uploadSingleFile = async (s3, file) => {
+const uploadSingleFile = async (s3, file, username) => {
   const contentType = file.type;
 	const bucket = await getFileType(contentType);
   if (bucket === undefined)
     throw new Error(`Cannot Upload the Following Content Type -> ${contentType}`);
-  
-  const buffer = fs.readFileSync(file.path);
-  const fileName = file.name;
+
+	const buffer = fs.readFileSync(file.path);
+  const fileName = username + '/' + file.name;
   let sizeLeft = Math.ceil(buffer.length / PART_SIZE);
 	await s3
 		.createMultipartUpload({
