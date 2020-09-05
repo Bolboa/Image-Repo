@@ -62,7 +62,7 @@ If I were to upload a very large zip file, it is very possible for the **lambda*
 
 Instead I decided the better approach would be to have a long running server handle the streaming. That way the constraint is passed on to the server which can be scaled up if necessary. The server unpacks and stream the zip file using a streaming API for _node.js_. The stream converts the contents of each file into a buffer which makes it easy to pass into the multipart upload functionality. Moreover, the neat thing about the stream API I chose is that it seems that it does not need to first store all of the zip contents in memory first, so it is potentially less resource-heavy.
 
-##Testing
+## Testing
 Unit tests were written to test the file uploading in `/routes/test` using `Jest`.
 
 Tests cover:
