@@ -17,10 +17,11 @@ The goal of this project is to provide a way for users to upload images in a sca
       - **Server** filter out image types and does multipart upload if necessary
     - If images exist, a folder is created for respective user and images are added there
     
-## Constraint
+## Constraints
 According to AWS documentation for **S3**:
 >Individual Amazon S3 objects can range in size from a minimum of 0 bytes to a maximum of 5 terabytes. The largest object that can be uploaded in a single PUT is 5 gigabytes.
 
+Since the largest object that can be uploaded in one go is **5GB**, we need a method to overcome this. After researching further, according to documentation a viable method is to use the _multipart API_:
 > <b>Upload objects in parts—</b>Using the multipart upload API, you can upload
 > large objects, up to 5 TB.
 >
