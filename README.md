@@ -31,4 +31,6 @@ Since the largest object that can be uploaded in one go is **5GB**, we need a me
 > any order, and in parallel. You can use a multipart upload for objects
 > from 5 MB to 5 TB in size.
 
-It is extremely unlikely for an image to be **5TB**, however a zip file has virtually no size constraint, so theoretically it is possible for us to receive a zip file ranging in the terabytes. Inside a zip file, the images can be of any size so for each image within the zip, it may still be necessary to do a _multipart_ upload.
+It is extremely unlikely for an image to be **5TB**, however a zip file has virtually no size constraint, so theoretically it is possible for us to receive a zip file ranging in the terabytes. Inside a zip file, the images can be of any size so for each image within the zip, it may still be necessary to do a _multipart_ upload for each image.
+
+Since the size constraint for a file is **5TB** in **S3**, even with _multipart_ upload, it may not be a good idea to try to upload the zip itself in parts in the off chance that it is greater than **5TB**. For this reason it is better to stream the contents from a server such as _EC2_ that can handle processing large files.
