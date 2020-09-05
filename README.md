@@ -37,6 +37,7 @@ Since the size constraint for a file is **5 TB** in **S3**, even with _multipart
 
 ## Choice Of Design
 **Multipart**
+
 Given the constraints listed above, it is necessary to upload the file in parts using the _multipart API_. The server will receive a file and it will convert it into a data buffer. A buffer here is an array of bytes, printed in hexadeciamal 00 to ff, or 0 to 255. 
 
 ```<Buffer ff d8 ff e2 0b f8 49 43 43 5f 50 52 4f 46 49 4c 45 00 01 01 00 00 0b e8 00 00 00 00 02 00 00 00 6d 6e... >```
@@ -48,6 +49,7 @@ The neat thing about buffers is that they are easy to _slice_. We will be upload
 </p>
 
 **Uploading Zip Files**
+
 The second aspect of the project was to figure out a reliable way to upload all the contents of a zip file into the **S3** Image Repository. My first attempt was to upload the zip file using multipart upload to one **S3**, and then have a **lambda** get kicked off that will stream and filter the images to another **S3** (Image Repository). This approach I realized was not ideal because AWS **lambda** have a hard limit for temporary storage of **512 MB**. 
 
 >Deployment package size:
@@ -58,5 +60,5 @@ The second aspect of the project was to figure out a reliable way to upload all 
 
 If I were to upload a very large zip file, it is very possible for the **lambda** to potentially timeout. Since I want to ensure the application can be scaled, this would not be a great approach.
 
-Instead I decided the better approach would be to have a long running server handle the streaming. That way the constraint is passed on to the server which can be scaled up if necessary. The server unpacks and stream the zip file using a streaming API for _node.js_. The stream converts the contents of each file into a buffer which makes it easy to pass into the multipart upload functionality.
+Instead I decided the better approach would be to have a long running server handle the streaming. That way the constraint is passed on to the server which can be scaled up if necessary. The server unpacks and stream the zip file using a streaming API for _node.js_. The stream converts the contents of each file into a buffer which makes it easy to pass into the multipart upload functionality. Moreover, the neat thing about the stream API I chose is that it seems that it does not need to first store all of the zip contents in memory first, so it is potentially less resource-heavy.
 
