@@ -11,11 +11,6 @@ const testParamsForImageBucket = {
 	Prefix: PREFIX
 };
 
-const testParamsForZipBucket = {
-	Bucket: process.env.ZIP_BUCKET_NAME,
-	Prefix: PREFIX
-};
-
 const emptyS3Directory = async (params) => {
 	const listedObjects = await s3.listObjectsV2(params).promise();
 	if (listedObjects.Contents.length === 0) return;
@@ -34,4 +29,3 @@ const emptyS3Directory = async (params) => {
 };
 
 emptyS3Directory(testParamsForImageBucket);
-emptyS3Directory(testParamsForZipBucket);
