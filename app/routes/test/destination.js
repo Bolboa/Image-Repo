@@ -11,6 +11,10 @@ const testParamsForImageBucket = {
 	Prefix: 'test/'
 };
 
+const testParamsForUsers = {
+	Bucket: process.env.IMAGE_BUCKET_NAME
+};
+
 const cases = [
 	['png'],
 	['jpg'],
@@ -45,6 +49,16 @@ const destinationTest = () => describe('Destination Content', () => {
 		const imageData = await testContent(testParamsForImageBucket);
 		const imageDataContent = imageData.Contents.filter(data => { return data.Key.includes('zip') });
 		await expect(imageDataContent.length).toBe(NUMBER_OF_IMAGE_TYPES);
+	});
+
+	test('Check If Correct Users Were Uploaded', async () => {
+		const imageData = await testContent(testParamsForUsers);
+		const resultBob = await containsType(imageData.Contents, 'bob');
+		expect(resultBob).toBe(true);
+		const resultSara = await containsType(imageData.Contents, 'sara');
+		expect(resultSara).toBe(true);
+		const resultJohn = await containsType(imageData.Contents, 'john');
+		expect(resultJohn).toBe(false);
 	});
 });
 
