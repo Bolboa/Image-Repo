@@ -18,9 +18,7 @@
     "koa-combine-routers": "^4.0.2",
     "koa-router": "^9.4.0",
     "multiparty": "^4.2.2",
-    "node-stream-zip": "^1.11.3",
-    "unzip": "^0.1.11",
-    "unzipper": "^0.10.11"
+    "node-stream-zip": "^1.11.3"
   },
   "devDependencies": {
     "jest": "^26.4.2",
