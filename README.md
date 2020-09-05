@@ -87,7 +87,7 @@ It has come to my attention that using _AWS Config_ is no longer ideal and that 
 `AWS.config.update({ accessKeyId: process.env.ID, secretAccessKey: process.env.SECRET });`
 But instead it is better to use a role, something like:
 
-```
+```javascript
 const sts = new AWS.STS();
 sts.assumeRole({
   RoleArn: 'arn:aws:iam::xxxxxx:/role/user',
