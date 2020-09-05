@@ -50,12 +50,10 @@ The neat thing about buffers is that they are easy to _slice_. We will be upload
 **Uploading Zip Files**
 The second aspect of the project was to figure out a reliable way to upload all the contents of a zip file into the **S3** Image Repository. My first attempt was to upload the zip file using multipart upload to one **S3**, and then have a **lambda** get kicked off that will stream and filter the images to another **S3** (Image Repository). This approach I realized was not ideal because AWS **lambda** have a hard limit for temporary storage of **512 MB**. 
 
->Deployment package size
->50 MB (zipped, for direct upload)
->250 MB (unzipped, including layers)
->3 MB (console editor)
+>Deployment package size:
+>(50 MB (zipped, for direct upload), 250 MB (unzipped, including layers), 3 MB (console editor))
 
->/tmp directory storage
+>/tmp directory storage:
 >512 MB
 
 If I were to upload a very large zip file, it is very possible for the **lambda** to potentially timeout. Since I want to ensure the application can be scaled, this would not be a great approach.
