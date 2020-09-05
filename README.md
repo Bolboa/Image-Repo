@@ -44,3 +44,7 @@ The neat thing about buffers is that they are easy to _slice_. We will be upload
 
 ![Multipart](/images/s3_multipart_upload.png)
 
+<p align="center">
+  <img src="http:/s3_multipart_upload.png" />
+</p>
+
