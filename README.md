@@ -13,4 +13,5 @@ The goal of this project is to provide a way for users to upload images in a sca
 - **Server** receives a POST request of any file type
   - **Server** checks file type
     - If type contains (jpg, jpeg, png, gif), do multipart upload if image is large
-    - If type is _zip_, unpack and stream the contents through multipart upload if necessary
+    - If type is _zip_, unpack and stream the contents 
+      - **Server** filter out image types and does multipart upload if necessary
