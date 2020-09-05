@@ -30,3 +30,5 @@ Since the largest object that can be uploaded in one go is **5GB**, we need a me
 > objects in parts. These object parts can be uploaded independently, in
 > any order, and in parallel. You can use a multipart upload for objects
 > from 5 MB to 5 TB in size.
+
+It is extremely unlikely for an image to be **5TB**, however a zip file has virtually no size constraint, so theoretically it is possible for us to receive a zip file ranging in the terabytes. Inside a zip file, the images can be of any size so for each image within the zip, it may still be necessary to do a _multipart_ upload.
