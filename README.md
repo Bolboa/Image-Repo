@@ -72,4 +72,13 @@ Tests cover:
   - Test folder contains 1 of each image
 - Check proper files were uploaded to **S3** (zip)
   - Test folder contains all file content from zip
-- Check if multiple user folder are created for different user requests
+- Check if multiple user folders are created for different user requests
+
+## Things to improve on
+A few things to improve on if we were to take this project further. First, secure requests to the API is an important thing to keep in mind. For this project I just passed the username as a query parameter, but ideally we should be using something more secure than that. A user should be authenticated via some kind of encryption key like ***JWT**.
+
+_DDOS_ attacks are also a possibility. Some kind of event throttling would be necessary to prevent this. A _DDOS_ attack could also happen by uploading many large files in order to create some kind of overflow buffer. The fact that the server is processing the data chunk-by-chunk will help to prevent this, but it is still important to go over such questions as:
+- what happens if file upload fills the disk space?
+- Does the file processing read the whole file into memory, or does it process it in smaller chunks? Third-party tools are not always reliable.
+- how does the code handle an unexpected failure in the processing of the file?
+- will the large file be removed from everywhere it exists on disk, even if an error occurs?
