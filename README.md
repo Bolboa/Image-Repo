@@ -19,6 +19,8 @@ The goal of this project is to provide a way for users to upload images in a sca
     
 ## Constraint
 According to AWS documentation for **S3**:
+>Individual Amazon S3 objects can range in size from a minimum of 0 bytes to a maximum of 5 terabytes. The largest object that can be uploaded in a single PUT is 5 gigabytes.
+
 > <b>Upload objects in parts—</b>Using the multipart upload API, you can upload
 > large objects, up to 5 TB.
 >
