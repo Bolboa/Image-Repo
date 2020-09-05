@@ -36,6 +36,9 @@ It is extremely unlikely for an image to be **5TB**, however a zip file has virt
 Since the size constraint for a file is **5TB** in **S3**, even with _multipart_ upload, it may not be a good idea to try to upload the zip itself in parts in the off chance that it is greater than **5TB**. For this reason it is better to stream the contents from a server such as _EC2_ that can handle processing large files.
 
 ## Choice Of Design
-Given the constraints listed above, it is necessary to upload the file in parts using the _multipart API_. The server will receive a file and it will convert it into a data buffer. A buffer here is an array of bytes, printed in hexadeciamal 00 to ff, or 0 to 255. The neat thing about buffers is that they are easy to _slice_. We will be uploading the slices one by one and keeping track of when the file is finished uploading.
+Given the constraints listed above, it is necessary to upload the file in parts using the _multipart API_. The server will receive a file and it will convert it into a data buffer. A buffer here is an array of bytes, printed in hexadeciamal 00 to ff, or 0 to 255. 
+```<Buffer ff d8 ff e2 0b f8 49 43 43 5f 50 52 4f 46 49 4c 45 00 01 01 00 00 0b e8 00 00 00 00 02 00 00 00 6d 6e 74 72 52 47 42 20 58 59... >```
+
+The neat thing about buffers is that they are easy to _slice_. We will be uploading the slices one by one and keeping track of when the file is finished uploading.
 
 
