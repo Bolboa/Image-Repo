@@ -10,7 +10,7 @@ const upload = async ctx => {
   await Promise.all(Object.keys(files).map(async key => {
 		const file = files[key];
 		if (file.type.match(FILE_REGEX)) await multipart(fs.readFileSync(file.path), file.name, username);
-		else if (file.type === 'application/zip') unpack(file, username);
+		else if (file.type === 'application/zip') await unpack(file, username);
 		else throw new Error(`Cannot Upload the Following Content Type -> ${file.type}`);
 	}));
 	ctx.status = 200;
