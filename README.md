@@ -74,7 +74,7 @@ Tests cover:
   - Test folder contains all file content from zip
 - Check if multiple user folders are created for different user requests
 
-## Things to improve on
+## Things To Improve On
 A few things to improve on if we were to take this project further. First, secure requests to the API is an important thing to keep in mind. For this project I just passed the username as a query parameter, but ideally we should be using something more secure than that. A user should be authenticated via some kind of encryption key like ***JWT**.
 
 _DDOS_ attacks are also a possibility. Some kind of event throttling would be necessary to prevent this. A _DDOS_ attack could also happen by uploading many large files in order to create some kind of overflow buffer. The fact that the server is processing the data chunk-by-chunk will help to prevent this, but it is still important to go over such questions as:
