@@ -82,3 +82,28 @@ _DDOS_ attacks are also a possibility. Some kind of event throttling would be ne
 - Does the file processing read the whole file into memory, or does it process it in smaller chunks? Third-party tools are not always reliable.
 - how does the code handle an unexpected failure in the processing of the file?
 - will the large file be removed from everywhere it exists on disk, even if an error occurs?
+
+It has come to my attention that using _AWS Config_ is no longer ideal and that **IAM** roles are the preffered way of making connections. My current code is using:
+`AWS.config.update({ accessKeyId: process.env.ID, secretAccessKey: process.env.SECRET });`
+But instead it is better to use a role, something like:
+
+```
+const sts = new AWS.STS();
+sts.assumeRole({
+  RoleArn: 'arn:aws:iam::xxxxxx:/role/user',
+  RoleSessionName: 'awssdk'
+}, function(err, data) {
+  if (err) { // an error occurred
+    console.log('Cannot assume role');
+    console.log(err, err.stack);
+  } 
+  else { // successful response
+    AWS.config.update({
+      accessKeyId: data.Credentials.AccessKeyId,
+      secretAccessKey: data.Credentials.SecretAccessKey,
+      sessionToken: data.Credentials.SessionToken
+    });
+  }
+});
+```
+
