@@ -1,0 +1,29 @@
+{
+  "name": "imagerepository",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Eric Bolboa",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.740.0",
+    "dotenv": "^8.2.0",
+    "file-type": "^15.0.0",
+    "koa": "^2.13.0",
+    "koa-body": "^4.2.0",
+    "koa-bodyparser": "^4.3.0",
+    "koa-combine-routers": "^4.0.2",
+    "koa-router": "^9.4.0",
+    "multiparty": "^4.2.2",
+    "node-stream-zip": "^1.11.3",
+    "unzip": "^0.1.11",
+    "unzipper": "^0.10.11"
+  },
+  "devDependencies": {
+    "jest": "^26.4.2",
+    "supertest": "^4.0.2"
+  }
+}

@@ -1,0 +1,4 @@
+.env
+/node_modules
+/routes/.DS_Store
+/routes/test/.DS_Store
