@@ -42,4 +42,5 @@ Given the constraints listed above, it is necessary to upload the file in parts 
 
 The neat thing about buffers is that they are easy to _slice_. We will be uploading the slices one by one and keeping track of when the file is finished uploading.
 
+![Multipart](/images/s3_multipart_upload.png)
 
