@@ -3,3 +3,4 @@ The goal of this project is to provide a way for users to upload images in a sca
 
 ## Assumptions
 - User should be able to upload a single image, multiple images, or upload in bulk via a zipped file
+- The file being uploaded can be very large (>5GB) or small
